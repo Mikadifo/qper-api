@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import errorCodes from "../../constants/errorCodes.js";
 import { AppError } from "../../middleware/errorHandler.middleware.js";
 
-const { PRISMA_DUPLICATE, PRISMA_NOT_FOUND } = errorCodes;
+const { PRISMA_DUPLICATE } = errorCodes;
 
 dotenv.config();
 
