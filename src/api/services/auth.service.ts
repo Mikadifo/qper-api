@@ -39,7 +39,7 @@ const login = async ({ email, password }: LoginDto) => {
   const user = await prisma.user.findUnique({ where: { email } });
 
   if (!user) {
-    const error = new AppError("Invalid username or password", 401);
+    const error = new AppError("Invalid email or password", 401);
 
     throw error;
   }
