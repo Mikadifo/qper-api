@@ -1,6 +1,8 @@
 import { Router } from "express";
 import authMiddleware from "../../middleware/auth.middleware.js";
-import { getIssues } from "../controllers/issue.controller.js";
+import { addIssue, getIssues } from "../controllers/issue.controller.js";
+import validate from "../../middleware/validate.middleware.js";
+import { newIssueSchema } from "../schemas/issue.schema.js";
 
 /**
  * @swagger
@@ -31,5 +33,51 @@ const router = Router();
  *         description: Unexpected error
  */
 router.get("/all/:projectId", authMiddleware, getIssues);
+
+/**
+ * @swagger
+ * /api/issues/new/{projectId}:
+ *   post:
+ *     tags: [Issue]
+ *     summary: Add new issue
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         required: true
+ *         name: projectId
+ *         schema:
+ *           type: number
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - title
+ *               - description
+ *               - steps
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               steps:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Issue created successfully
+ *       400:
+ *         description: Validation error
+ *       500:
+ *         description: Unexpected error
+ */
+router.post(
+  "/new/:projectId",
+  authMiddleware,
+  validate(newIssueSchema),
+  addIssue,
+);
 
 export default router;
