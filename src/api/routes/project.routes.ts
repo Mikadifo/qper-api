@@ -1,6 +1,8 @@
 import { Router } from "express";
 import authMiddleware from "../../middleware/auth.middleware.js";
-import { getProjects } from "../controllers/project.controller.js";
+import { addProject, getProjects } from "../controllers/project.controller.js";
+import validate from "../../middleware/validate.middleware.js";
+import { newProjectSchema } from "../schemas/project.schema.js";
 
 /**
  * @swagger
@@ -25,5 +27,36 @@ const router = Router();
  *         description: Unexpected error
  */
 router.get("/", authMiddleware, getProjects);
+
+/**
+ * @swagger
+ * /api/project:
+ *   post:
+ *     tags: [Project]
+ *     summary: Add new project
+ *     security:
+ *       - BearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *             properties:
+ *               name:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Project created successfully
+ *       400:
+ *         description: Validation error
+ *       409:
+ *         description: Project with that name already exists
+ *       500:
+ *         description: Unexpected error
+ */
+router.post("/", authMiddleware, validate(newProjectSchema), addProject);
 
 export default router;
