@@ -6,4 +6,7 @@ export const newIssueSchema = Yup.object().shape({
   steps: Yup.string().required("Steps required"),
   expectedResult: Yup.string().required("Expected Result required"),
   actualResult: Yup.string().required("Actual Result required"),
+  screenshots: Yup.array()
+    .of(Yup.string())
+    .required("Screenshots are required"),
 });

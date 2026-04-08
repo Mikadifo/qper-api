@@ -4,4 +4,5 @@ export interface NewIssueDto {
   steps: string;
   expectedResult: string;
   actualResult: string;
+  screenshots: string[];
 }
