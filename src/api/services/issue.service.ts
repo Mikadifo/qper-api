@@ -59,6 +59,36 @@ const addIssue = async (issue: NewIssueDto, projectId: number) => {
   }
 };
 
+const updateIssue = async (issueId: number, issue: NewIssueDto) => {
+  try {
+    const updatedIssue = await prisma.bugReport.update({
+      where: { id: issueId },
+      data: {
+        ...issue,
+      },
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+        description: true,
+        steps: true,
+        actualResult: true,
+        expectedResult: true,
+      },
+    });
+
+    return updatedIssue;
+  } catch (err: any) {
+    if (err.code === PRISMA_NOT_FOUND) {
+      const error = new AppError("Issue not found", 404);
+
+      throw error;
+    }
+
+    throw err;
+  }
+};
+
 const deleteIssue = async (issueId: number) => {
   try {
     await prisma.bugReport.delete({
@@ -79,5 +109,6 @@ export default {
   getIssues,
   getIssue,
   addIssue,
+  updateIssue,
   deleteIssue,
 };

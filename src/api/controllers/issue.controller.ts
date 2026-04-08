@@ -49,6 +49,22 @@ export const getIssue = async (
   }
 };
 
+export const updateIssue = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const issueId = Number(req.params.id);
+
+    const movie = await issueService.updateIssue(issueId, req.body);
+
+    res.json(movie);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const deleteIssue = async (
   req: Request,
   res: Response,

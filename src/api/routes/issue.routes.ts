@@ -5,6 +5,7 @@ import {
   getIssues,
   getIssue,
   deleteIssue,
+  updateIssue,
 } from "../controllers/issue.controller.js";
 import validate from "../../middleware/validate.middleware.js";
 import { newIssueSchema } from "../schemas/issue.schema.js";
@@ -112,6 +113,49 @@ router.post(
   validate(newIssueSchema),
   addIssue,
 );
+
+/**
+ * @swagger
+ * /api/issues/{id}:
+ *   put:
+ *     tags: [Issue]
+ *     summary: Update issue
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         required: true
+ *         name: id
+ *         schema:
+ *           type: number
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *               steps:
+ *                 type: string
+ *               expectedResult:
+ *                 type: string
+ *               actualResult:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Issue updated successfully
+ *       400:
+ *         description: Validation error
+ *       404:
+ *         description: Issue not found
+ *       500:
+ *         description: Unexpected error
+ */
+router.put("/:id", authMiddleware, validate(newIssueSchema), updateIssue);
 
 /**
  * @swagger
