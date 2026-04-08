@@ -1,8 +1,12 @@
 import { PrismaClient } from "../../../generated/prisma/client.js";
+import errorCodes from "../../constants/errorCodes.js";
+import { AppError } from "../../middleware/errorHandler.middleware.js";
 import { NewIssueDto } from "../dtos/issue.dto.js";
 import dotenv from "dotenv";
 
 dotenv.config();
+
+const { PRISMA_NOT_FOUND } = errorCodes;
 
 const prisma = new PrismaClient();
 
@@ -40,10 +44,34 @@ const addIssue = async (issue: NewIssueDto, projectId: number) => {
   try {
     return await prisma.bugReport.create({
       data: { ...issue, projectId: projectId },
-      select: { id: true, title: true, createdAt: true },
+      select: {
+        id: true,
+        title: true,
+        createdAt: true,
+        description: true,
+        steps: true,
+        actualResult: true,
+        expectedResult: true,
+      },
     });
   } catch (err: any) {
     throw err;
+  }
+};
+
+const deleteIssue = async (issueId: number) => {
+  try {
+    await prisma.bugReport.delete({
+      where: {
+        id: issueId,
+      },
+    });
+  } catch (err: any) {
+    if (err.code === PRISMA_NOT_FOUND) {
+      const error = new AppError("List not found", 404);
+
+      throw error;
+    }
   }
 };
 
@@ -51,4 +79,5 @@ export default {
   getIssues,
   getIssue,
   addIssue,
+  deleteIssue,
 };

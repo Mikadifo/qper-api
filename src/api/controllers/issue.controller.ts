@@ -48,3 +48,19 @@ export const getIssue = async (
     next(err);
   }
 };
+
+export const deleteIssue = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const id = Number(req.params.id);
+
+    await issueService.deleteIssue(id);
+
+    res.json("Issue deleted successfully");
+  } catch (err) {
+    next(err);
+  }
+};

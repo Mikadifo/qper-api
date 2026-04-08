@@ -4,6 +4,7 @@ import {
   addIssue,
   getIssues,
   getIssue,
+  deleteIssue,
 } from "../controllers/issue.controller.js";
 import validate from "../../middleware/validate.middleware.js";
 import { newIssueSchema } from "../schemas/issue.schema.js";
@@ -111,5 +112,29 @@ router.post(
   validate(newIssueSchema),
   addIssue,
 );
+
+/**
+ * @swagger
+ * /api/issues/{id}:
+ *   delete:
+ *     tags: [Issue]
+ *     summary: Remove issue from list
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         required: true
+ *         name: id
+ *         schema:
+ *           type: number
+ *     responses:
+ *       200:
+ *         description: Issue removed from list
+ *       404:
+ *         description: Issue not found
+ *       500:
+ *         description: Unexpected error
+ */
+router.delete("/:id", authMiddleware, deleteIssue);
 
 export default router;
