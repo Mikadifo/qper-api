@@ -34,3 +34,17 @@ export const getIssues = async (
     next(err);
   }
 };
+
+export const getIssue = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const issueId = Number(req.params.issueId);
+    const result = await issueService.getIssue(issueId);
+    res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+};

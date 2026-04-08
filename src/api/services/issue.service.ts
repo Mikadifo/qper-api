@@ -23,6 +23,19 @@ const getIssues = async (projectId: number) => {
   }
 };
 
+const getIssue = async (issueId: number) => {
+  try {
+    const issues = await prisma.bugReport.findUnique({
+      where: { id: issueId },
+      omit: { projectId: true },
+    });
+
+    return issues;
+  } catch (err) {
+    throw err;
+  }
+};
+
 const addIssue = async (issue: NewIssueDto, projectId: number) => {
   try {
     return await prisma.bugReport.create({
@@ -36,5 +49,6 @@ const addIssue = async (issue: NewIssueDto, projectId: number) => {
 
 export default {
   getIssues,
+  getIssue,
   addIssue,
 };

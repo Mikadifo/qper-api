@@ -1,6 +1,10 @@
 import { Router } from "express";
 import authMiddleware from "../../middleware/auth.middleware.js";
-import { addIssue, getIssues } from "../controllers/issue.controller.js";
+import {
+  addIssue,
+  getIssues,
+  getIssue,
+} from "../controllers/issue.controller.js";
 import validate from "../../middleware/validate.middleware.js";
 import { newIssueSchema } from "../schemas/issue.schema.js";
 
@@ -33,6 +37,28 @@ const router = Router();
  *         description: Unexpected error
  */
 router.get("/all/:projectId", authMiddleware, getIssues);
+
+/**
+ * @swagger
+ * /api/issues/{issueId}:
+ *   get:
+ *     tags: [Issue]
+ *     summary: Get issue by id
+ *     parameters:
+ *       - in: path
+ *         required: true
+ *         name: issueId
+ *         schema:
+ *           type: number
+ *     security:
+ *       - BearerAuth: []
+ *     responses:
+ *       200:
+ *         description: Issue fetched successfully
+ *       500:
+ *         description: Unexpected error
+ */
+router.get("/:issueId", authMiddleware, getIssue);
 
 /**
  * @swagger

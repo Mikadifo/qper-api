@@ -30,11 +30,13 @@ model Project {
 }
 
 model BugReport {
-    id          Int      @id @default(autoincrement())
-    title       String
-    description String
-    steps       String
-    projectId   Int
-    project     Project  @relation(fields: [projectId], references: [id])
-    createdAt   DateTime @default(now())
+    id             Int      @id @default(autoincrement())
+    title          String
+    description    String
+    steps          String
+    expectedResult String
+    actualResult   String
+    projectId      Int
+    project        Project  @relation(fields: [projectId], references: [id])
+    createdAt      DateTime @default(now())
 }
