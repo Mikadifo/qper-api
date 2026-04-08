@@ -8,14 +8,19 @@ export const upload = async (
 ) => {
   try {
     const projectId = req.body.projectId;
-    const file = req.file;
+    const issueId = req.body.projectId;
+    const files = req.files as Express.Multer.File[];
 
-    if (!file) {
-      return res.status(400).json({ message: "Missing file" });
+    if (!files || files.length === 0) {
+      return res.status(400).json({ message: "Missing files" });
     }
 
-    const url = await uploadService.uploadImage({ projectId, file });
-    res.json(url);
+    const urls = await Promise.all(
+      files.map((file) =>
+        uploadService.uploadImage({ projectId, issueId, file }),
+      ),
+    );
+    res.json({ urls });
   } catch (err) {
     next(err);
   }

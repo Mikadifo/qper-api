@@ -15,7 +15,7 @@ const router = Router();
  * /api/screenshot/upload:
  *   post:
  *     tags: [Screenshots]
- *     summary: Upload a img to the project folder
+ *     summary: Upload a img to the project/issue folder
  *     requestBody:
  *       required: true
  *       content:
@@ -24,23 +24,24 @@ const router = Router();
  *             type: object
  *             required:
  *               - projectId
+ *               - issueId
  *               - image
  *             properties:
  *               projectId:
+ *                 type: number
+ *               issueId:
  *                 type: number
  *               image:
  *                 type: string
  *                 format: binary
  *     responses:
  *       201:
- *         description: User created successfully
+ *         description: Images uploaded successfully
  *       400:
  *         description: Validation error
- *       409:
- *         description: Email or username already exists
  *       500:
  *         description: Unexpected error
  */
-router.post("/upload", upload.single("image"), uploadImg);
+router.post("/upload", upload.array("screenshots"), uploadImg);
 
 export default router;
