@@ -84,12 +84,18 @@ router.get("/:issueId", authMiddleware, getIssue);
  *               - title
  *               - description
  *               - steps
+ *               - expectedResult
+ *               - actualResult
  *             properties:
  *               title:
  *                 type: string
  *               description:
  *                 type: string
  *               steps:
+ *                 type: string
+ *               expectedResult:
+ *                 type: string
+ *               actualResult:
  *                 type: string
  *     responses:
  *       201:
