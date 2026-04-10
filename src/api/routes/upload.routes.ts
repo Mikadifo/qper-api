@@ -12,7 +12,7 @@ const router = Router();
 
 /**
  * @swagger
- * /api/screenshot/upload:
+ * /api/screenshots/upload:
  *   post:
  *     tags: [Screenshots]
  *     summary: Upload a img to the project/issue folder

@@ -45,5 +45,5 @@ router.use("/issues", issueRoutes);
  *       scheme: bearer
  *       bearerFormat: JWT
  */
-router.use("/screenshot", uploadRoutes);
+router.use("/screenshots", uploadRoutes);
 export default router;

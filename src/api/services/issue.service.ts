@@ -48,10 +48,6 @@ const addIssue = async (issue: NewIssueDto, projectId: number) => {
         id: true,
         title: true,
         createdAt: true,
-        description: true,
-        steps: true,
-        actualResult: true,
-        expectedResult: true,
       },
     });
   } catch (err: any) {
