@@ -8,7 +8,7 @@ export const upload = async (
 ) => {
   try {
     const projectId = req.body.projectId;
-    const issueId = req.body.projectId;
+    const issueId = req.body.issueId;
     const files = req.files as Express.Multer.File[];
 
     if (!files || files.length === 0) {
@@ -20,6 +20,7 @@ export const upload = async (
         uploadService.uploadImage({ projectId, issueId, file }),
       ),
     );
+
     res.json({ urls });
   } catch (err) {
     next(err);

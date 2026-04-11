@@ -41,6 +41,8 @@ const getIssue = async (issueId: number) => {
 };
 
 const addIssue = async (issue: NewIssueDto, projectId: number) => {
+  issue.screenshots = [];
+
   try {
     return await prisma.bugReport.create({
       data: { ...issue, projectId: projectId },
@@ -56,6 +58,10 @@ const addIssue = async (issue: NewIssueDto, projectId: number) => {
 };
 
 const updateIssue = async (issueId: number, issue: NewIssueDto) => {
+  issue.screenshots = issue.screenshots.filter(
+    (url) => !url.startsWith("blob:"),
+  );
+
   try {
     const updatedIssue = await prisma.bugReport.update({
       where: { id: issueId },
