@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { upload as uploadImg } from "../controllers/upload.controller.js";
+import {
+  deleteScreenshot,
+  upload as uploadImg,
+} from "../controllers/upload.controller.js";
 import upload from "../../middleware/upload.middleware.js";
 
 /**
@@ -43,5 +46,35 @@ const router = Router();
  *         description: Unexpected error
  */
 router.post("/upload", upload.array("screenshots"), uploadImg);
+
+/**
+ * @swagger
+ * /api/screenshots/delete:
+ *   delete:
+ *     tags: [Screenshots]
+ *     summary: Delete a url from the project/issue folder
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - issueId
+ *               - urls
+ *             properties:
+ *               issueId:
+ *                 type: number
+ *               urls:
+ *                 type: array
+ *                 items:
+ *                   type: string
+ *     responses:
+ *       200:
+ *         description: Images deleted successfully
+ *       500:
+ *         description: Unexpected error
+ */
+router.delete("/delete", deleteScreenshot);
 
 export default router;

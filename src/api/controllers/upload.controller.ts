@@ -12,7 +12,7 @@ export const upload = async (
     const files = req.files as Express.Multer.File[];
 
     if (!files || files.length === 0) {
-      return res.status(400).json({ message: "Missing files" });
+      return res.status(400).json({ error: "Missing files" });
     }
 
     const urls = await Promise.all(
@@ -22,6 +22,25 @@ export const upload = async (
     );
 
     res.json({ urls });
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const deleteScreenshot = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const issueId = req.body.issueId;
+    const urls = req.body.urls;
+
+    await Promise.all(
+      urls.forEach((url: string) => uploadService.deleteImage(issueId, url)),
+    );
+
+    res.status(200);
   } catch (err) {
     next(err);
   }

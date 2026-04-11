@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import { UploadDto } from "../dtos/upload.dto.js";
 import { randomUUID } from "node:crypto";
 import { r2 } from "../../lib/r2.js";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
 
 dotenv.config();
 const prisma = new PrismaClient();
@@ -38,6 +38,39 @@ const uploadImage = async ({ projectId, issueId, file }: UploadDto) => {
   }
 };
 
+const deleteImage = async (issueId: number, imageURL: string) => {
+  try {
+    const url = new URL(imageURL);
+    const key = url.pathname.slice(1);
+
+    await r2.send(
+      new DeleteObjectCommand({
+        Bucket: process.env.R2_BUCKET_NAME,
+        Key: key,
+      }),
+    );
+
+    const issue = await prisma.bugReport.findUnique({
+      where: { id: issueId },
+      select: { id: true, screenshots: true },
+    });
+
+    await prisma.bugReport.update({
+      where: { id: issueId },
+      data: {
+        screenshots: issue?.screenshots.filter(
+          (screenshot) => screenshot !== imageURL,
+        ),
+      },
+    });
+
+    return url;
+  } catch (err: any) {
+    throw err;
+  }
+};
+
 export default {
   uploadImage,
+  deleteImage,
 };
