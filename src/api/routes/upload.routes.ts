@@ -49,32 +49,30 @@ router.post("/upload", upload.array("screenshots"), uploadImg);
 
 /**
  * @swagger
- * /api/screenshots/delete:
+ * /api/screenshots/delete/{issueId}:
  *   delete:
  *     tags: [Screenshots]
  *     summary: Delete a url from the project/issue folder
  *     requestBody:
  *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             required:
- *               - issueId
- *               - urls
- *             properties:
- *               issueId:
- *                 type: number
- *               urls:
- *                 type: array
- *                 items:
- *                   type: string
+ *     parameters:
+ *       - name: issueId
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: number
+ *       - name: imageUrl
+ *         in: query
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uri
  *     responses:
  *       200:
  *         description: Images deleted successfully
  *       500:
  *         description: Unexpected error
  */
-router.delete("/delete", deleteScreenshot);
+router.delete("/delete/:issueId", deleteScreenshot);
 
 export default router;

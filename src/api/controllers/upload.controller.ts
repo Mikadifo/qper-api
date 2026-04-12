@@ -33,12 +33,14 @@ export const deleteScreenshot = async (
   next: NextFunction,
 ) => {
   try {
-    const issueId = req.body.issueId;
-    const urls = req.body.urls;
+    const { issueId } = req.params;
+    const imageUrl = req.query.imageUrl as string;
 
-    await Promise.all(
-      urls.forEach((url: string) => uploadService.deleteImage(issueId, url)),
-    );
+    if (!imageUrl) {
+      return res.status(400).json({ error: "Missing image url" });
+    }
+
+    uploadService.deleteImage(+issueId, imageUrl);
 
     res.status(200);
   } catch (err) {
