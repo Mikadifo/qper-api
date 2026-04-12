@@ -49,18 +49,16 @@ const uploadImage = async ({ projectId, issueId, file }: UploadDto) => {
       }),
     );
 
-    const url = `${process.env.R2_PUBLIC_URL}/${key}`;
-
     await prisma.bugReport.update({
       where: { id: Number(issueId) },
       data: {
         screenshots: {
-          push: url,
+          push: key,
         },
       },
     });
 
-    return url;
+    return key;
   } catch (err: any) {
     throw err;
   }
@@ -87,7 +85,7 @@ const deleteImage = async (issueId: number, imageURL: string) => {
       where: { id: issueId },
       data: {
         screenshots: issue?.screenshots.filter(
-          (screenshot) => screenshot !== imageURL,
+          (screenshot) => screenshot !== key,
         ),
       },
     });
