@@ -41,7 +41,7 @@ const uploadImage = async ({ projectId, issueId, file }: UploadDto) => {
 const deleteImage = async (issueId: number, imageURL: string) => {
   try {
     const url = new URL(imageURL);
-    const key = url.pathname.slice(1);
+    const key = decodeURIComponent(url.pathname.slice(1));
 
     await r2.send(
       new DeleteObjectCommand({

@@ -42,7 +42,7 @@ export const deleteScreenshot = async (
 
     uploadService.deleteImage(+issueId, imageUrl);
 
-    res.status(200);
+    res.status(200).json({ success: true });
   } catch (err) {
     next(err);
   }
