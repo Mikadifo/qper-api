@@ -4,9 +4,37 @@ import { UploadDto } from "../dtos/upload.dto.js";
 import { randomUUID } from "node:crypto";
 import { r2 } from "../../lib/r2.js";
 import { DeleteObjectCommand, PutObjectCommand } from "@aws-sdk/client-s3";
+import { generateSignedUrl } from "../../utils/upload.util.js";
+import errorCodes from "../../constants/errorCodes.js";
+import { AppError } from "../../middleware/errorHandler.middleware.js";
+
+const { PRISMA_NOT_FOUND } = errorCodes;
 
 dotenv.config();
 const prisma = new PrismaClient();
+
+const getImages = async (issueId: number) => {
+  try {
+    const issue = await prisma.bugReport.findUniqueOrThrow({
+      where: { id: issueId },
+      select: { screenshots: true },
+    });
+
+    const urls = await Promise.all(
+      issue.screenshots.map((key) => generateSignedUrl(key)),
+    );
+
+    return urls;
+  } catch (err: any) {
+    if (err.code === PRISMA_NOT_FOUND) {
+      const error = new AppError("Issue not found", 404);
+
+      throw error;
+    }
+
+    throw err;
+  }
+};
 
 const uploadImage = async ({ projectId, issueId, file }: UploadDto) => {
   try {
@@ -24,7 +52,7 @@ const uploadImage = async ({ projectId, issueId, file }: UploadDto) => {
     const url = `${process.env.R2_PUBLIC_URL}/${key}`;
 
     await prisma.bugReport.update({
-      where: { id: +issueId },
+      where: { id: Number(issueId) },
       data: {
         screenshots: {
           push: url,
@@ -71,6 +99,7 @@ const deleteImage = async (issueId: number, imageURL: string) => {
 };
 
 export default {
+  getImages,
   uploadImage,
   deleteImage,
 };

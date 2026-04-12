@@ -1,6 +1,20 @@
 import { Response, Request, NextFunction } from "express";
 import uploadService from "../services/upload.service.js";
 
+export const getImages = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { issueId } = req.params;
+
+    res.status(200).json(uploadService.getImages(Number(issueId)));
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const upload = async (
   req: Request,
   res: Response,
@@ -40,7 +54,7 @@ export const deleteScreenshot = async (
       return res.status(400).json({ error: "Missing image url" });
     }
 
-    uploadService.deleteImage(+issueId, imageUrl);
+    uploadService.deleteImage(Number(issueId), imageUrl);
 
     res.status(200).json({ success: true });
   } catch (err) {
