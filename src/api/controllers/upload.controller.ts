@@ -9,7 +9,9 @@ export const getImages = async (
   try {
     const { issueId } = req.params;
 
-    res.status(200).json(uploadService.getImages(Number(issueId)));
+    const urls = await uploadService.getImages(Number(issueId));
+
+    res.status(200).json({ urls });
   } catch (err) {
     next(err);
   }
@@ -35,7 +37,7 @@ export const upload = async (
       ),
     );
 
-    res.json(urls);
+    res.json({ urls });
   } catch (err) {
     next(err);
   }
@@ -54,7 +56,7 @@ export const deleteScreenshot = async (
       return res.status(400).json({ error: "Missing image url" });
     }
 
-    uploadService.deleteImage(Number(issueId), imageUrl);
+    uploadService.deleteImage(+issueId, imageUrl);
 
     res.status(200).json({ success: true });
   } catch (err) {
