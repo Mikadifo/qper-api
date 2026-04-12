@@ -3,6 +3,8 @@ import errorCodes from "../../constants/errorCodes.js";
 import { AppError } from "../../middleware/errorHandler.middleware.js";
 import { NewIssueDto } from "../dtos/issue.dto.js";
 import dotenv from "dotenv";
+import { r2 } from "../../lib/r2.js";
+import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 
 dotenv.config();
 
@@ -93,6 +95,24 @@ const updateIssue = async (issueId: number, issue: NewIssueDto) => {
 
 const deleteIssue = async (issueId: number) => {
   try {
+    const issue = await prisma.bugReport.findUniqueOrThrow({
+      where: {
+        id: issueId,
+      },
+      select: { screenshots: true },
+    });
+
+    await Promise.all(
+      issue.screenshots.map(async (key) => {
+        await r2.send(
+          new DeleteObjectCommand({
+            Bucket: process.env.R2_BUCKET_NAME,
+            Key: key,
+          }),
+        );
+      }),
+    );
+
     await prisma.bugReport.delete({
       where: {
         id: issueId,
@@ -100,7 +120,7 @@ const deleteIssue = async (issueId: number) => {
     });
   } catch (err: any) {
     if (err.code === PRISMA_NOT_FOUND) {
-      const error = new AppError("List not found", 404);
+      const error = new AppError("Issue not found", 404);
 
       throw error;
     }

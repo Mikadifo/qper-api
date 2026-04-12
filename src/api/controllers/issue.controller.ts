@@ -79,7 +79,7 @@ export const deleteIssue = async (
 
     await issueService.deleteIssue(id);
 
-    res.json("Issue deleted successfully");
+    res.status(200).json("Issue deleted successfully");
   } catch (err) {
     next(err);
   }
