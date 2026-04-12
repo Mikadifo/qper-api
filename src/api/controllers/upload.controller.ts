@@ -35,7 +35,7 @@ export const upload = async (
       ),
     );
 
-    res.json({ urls });
+    res.json(urls);
   } catch (err) {
     next(err);
   }

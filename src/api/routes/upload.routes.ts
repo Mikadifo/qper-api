@@ -16,7 +16,7 @@ const router = Router();
 
 /**
  * @swagger
- * /api/screenshots/get:
+ * /api/screenshots/get/{issueId}:
  *   get:
  *     tags: [Screenshots]
  *     summary: Sign issue screenshots and return urls
@@ -34,7 +34,7 @@ const router = Router();
  *       500:
  *         description: Unexpected error
  */
-router.post("/get/:issueId", getImages);
+router.get("/get/:issueId", getImages);
 
 /**
  * @swagger
