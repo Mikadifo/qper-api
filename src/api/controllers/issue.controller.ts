@@ -1,5 +1,6 @@
 import { Response, Request, NextFunction } from "express";
 import issueService from "../services/issue.service.js";
+import uploadService from "../services/upload.service.js";
 
 export const addIssue = async (
   req: Request,
@@ -42,7 +43,10 @@ export const getIssue = async (
 ) => {
   try {
     const issueId = Number(req.params.issueId);
-    const result = await issueService.getIssue(issueId);
+    const issue = await issueService.getIssue(issueId);
+    const urls = await uploadService.getImages(issueId);
+    const result = { ...issue, screenshots: urls };
+
     res.status(200).json(result);
   } catch (err) {
     next(err);
