@@ -5,6 +5,7 @@ import {
   upload as uploadImg,
 } from "../controllers/upload.controller.js";
 import upload from "../../middleware/upload.middleware.js";
+import authMiddleware from "../../middleware/auth.middleware.js";
 
 /**
  * @swagger
@@ -34,7 +35,7 @@ const router = Router();
  *       500:
  *         description: Unexpected error
  */
-router.get("/get/:issueId", getImages);
+router.get("/get/:issueId", authMiddleware, getImages);
 
 /**
  * @swagger
@@ -68,7 +69,7 @@ router.get("/get/:issueId", getImages);
  *       500:
  *         description: Unexpected error
  */
-router.post("/upload", upload.array("screenshots"), uploadImg);
+router.post("/upload", authMiddleware, upload.array("screenshots"), uploadImg);
 
 /**
  * @swagger
@@ -94,6 +95,6 @@ router.post("/upload", upload.array("screenshots"), uploadImg);
  *       500:
  *         description: Unexpected error
  */
-router.delete("/delete/:issueId", deleteScreenshot);
+router.delete("/delete/:issueId", authMiddleware, deleteScreenshot);
 
 export default router;
