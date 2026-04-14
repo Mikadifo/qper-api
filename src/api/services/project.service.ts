@@ -3,7 +3,7 @@ import dotenv from "dotenv";
 import errorCodes from "../../constants/errorCodes.js";
 import { AppError } from "../../middleware/errorHandler.middleware.js";
 
-const { PRISMA_DUPLICATE } = errorCodes;
+const { PRISMA_DUPLICATE, PRISMA_NOT_FOUND } = errorCodes;
 
 dotenv.config();
 
@@ -44,12 +44,26 @@ const addProject = async (project: { name: string }, userId: number) => {
 
 const getReport = async (projectId: number) => {
   try {
+    const project = await prisma.project.findUniqueOrThrow({
+      where: { id: projectId },
+      select: { id: true, name: true },
+    });
+
     const issues = await prisma.bugReport.findMany({
       where: { projectId },
     });
 
-    return issues;
-  } catch (err) {
+    return { projectName: project.name, issues };
+  } catch (err: any) {
+    if (err.code === PRISMA_NOT_FOUND) {
+      const error = new AppError(
+        "Projet or issues for this project were not found",
+        404,
+      );
+
+      throw error;
+    }
+
     throw err;
   }
 };
