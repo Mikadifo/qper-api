@@ -42,7 +42,20 @@ const addProject = async (project: { name: string }, userId: number) => {
   }
 };
 
+const getReport = async (projectId: number) => {
+  try {
+    const issues = await prisma.bugReport.findMany({
+      where: { projectId },
+    });
+
+    return issues;
+  } catch (err) {
+    throw err;
+  }
+};
+
 export default {
   getProjects,
   addProject,
+  getReport,
 };

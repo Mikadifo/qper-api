@@ -32,3 +32,18 @@ export const getProjects = async (
     next(err);
   }
 };
+
+export const getReport = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const projectId = Number(req.params.projectId);
+    const result = await projectService.getReport(projectId);
+
+    res.status(200).json(result);
+  } catch (err) {
+    next(err);
+  }
+};
