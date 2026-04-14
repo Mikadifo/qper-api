@@ -2,6 +2,8 @@ import { PrismaClient } from "../../../generated/prisma/client.js";
 import dotenv from "dotenv";
 import errorCodes from "../../constants/errorCodes.js";
 import { AppError } from "../../middleware/errorHandler.middleware.js";
+import { upload } from "../controllers/upload.controller.js";
+import uploadService from "./upload.service.js";
 
 const { PRISMA_DUPLICATE, PRISMA_NOT_FOUND } = errorCodes;
 
@@ -53,7 +55,15 @@ const getReport = async (projectId: number) => {
       where: { projectId },
     });
 
-    return { projectName: project.name, issues };
+    const results = await Promise.all(
+      issues.map(async (issue) => {
+        const urls = await uploadService.getImages(issue.id);
+
+        return { ...issue, screenshots: urls };
+      }),
+    );
+
+    return { projectName: project.name, issues: results };
   } catch (err: any) {
     if (err.code === PRISMA_NOT_FOUND) {
       const error = new AppError(
