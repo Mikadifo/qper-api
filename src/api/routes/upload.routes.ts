@@ -2,6 +2,7 @@ import { Router } from "express";
 import {
   deleteScreenshot,
   getImages,
+  getImage,
   upload as uploadImg,
 } from "../controllers/upload.controller.js";
 import upload from "../../middleware/upload.middleware.js";
@@ -14,6 +15,27 @@ import authMiddleware from "../../middleware/auth.middleware.js";
  *   description: Authentication endpoints
  */
 const router = Router();
+
+/**
+ * @swagger
+ * /api/screenshots/image/get:
+ *   get:
+ *     tags: [Screenshots]
+ *     summary: Sign issue screenshots and return buffer
+ *     parameters:
+ *       - name: url
+ *         in: query
+ *         required: true
+ *         schema:
+ *           type: string
+ *           format: uri
+ *     responses:
+ *       200:
+ *         description: Image signed and fetched successfully
+ *       500:
+ *         description: Unexpected error
+ */
+router.get("/image/get", getImage);
 
 /**
  * @swagger

@@ -17,6 +17,25 @@ export const getImages = async (
   }
 };
 
+export const getImage = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { url } = req.query;
+
+    const { buffer, contentType } = await uploadService.getImage(url as string);
+
+    res.setHeader("Content-Type", contentType);
+    res.setHeader("Cache-Control", "public, max-age=86400");
+
+    return res.send(buffer);
+  } catch (err) {
+    next(err);
+  }
+};
+
 export const upload = async (
   req: Request,
   res: Response,

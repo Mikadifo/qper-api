@@ -36,6 +36,31 @@ const getImages = async (issueId: number) => {
   }
 };
 
+const getImage = async (url: string) => {
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch image: ${response.status}`);
+    }
+
+    const arrayBuffer = await response.arrayBuffer();
+
+    return {
+      buffer: Buffer.from(arrayBuffer),
+      contentType: response.headers.get("content-type") || "image/png",
+    };
+  } catch (err: any) {
+    if (err.code === PRISMA_NOT_FOUND) {
+      const error = new AppError("Issue not found", 404);
+
+      throw error;
+    }
+
+    throw err;
+  }
+};
+
 const uploadImage = async ({ projectId, issueId, file }: UploadDto) => {
   try {
     const key = `${projectId}/${issueId}/${randomUUID()}-${file.originalname}`;
@@ -98,6 +123,7 @@ const deleteImage = async (issueId: number, imageURL: string) => {
 
 export default {
   getImages,
+  getImage,
   uploadImage,
   deleteImage,
 };

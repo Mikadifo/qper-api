@@ -4,6 +4,7 @@ import errorCodes from "../../constants/errorCodes.js";
 import { AppError } from "../../middleware/errorHandler.middleware.js";
 import { upload } from "../controllers/upload.controller.js";
 import uploadService from "./upload.service.js";
+import { generatePdfFromUrl } from "./pdf.service.js";
 
 const { PRISMA_DUPLICATE, PRISMA_NOT_FOUND } = errorCodes;
 
@@ -78,8 +79,17 @@ const getReport = async (projectId: number) => {
   }
 };
 
+export async function exportPdf(projectId: string, token: string) {
+  const url = `${process.env.FRONTEND_URL}/report/${projectId}`;
+
+  const pdfBuffer = await generatePdfFromUrl(url, token);
+
+  return pdfBuffer;
+}
+
 export default {
   getProjects,
   addProject,
   getReport,
+  exportPdf,
 };

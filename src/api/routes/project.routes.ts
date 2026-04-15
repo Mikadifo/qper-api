@@ -2,6 +2,7 @@ import { Router } from "express";
 import authMiddleware from "../../middleware/auth.middleware.js";
 import {
   addProject,
+  exportPdf,
   getProjects,
   getReport,
 } from "../controllers/project.controller.js";
@@ -84,5 +85,27 @@ router.post("/", authMiddleware, validate(newProjectSchema), addProject);
  *         description: Unexpected error
  */
 router.get("/report/:projectId", authMiddleware, getReport);
+
+/**
+ * @swagger
+ * /api/project/export/{projectId}:
+ *   post:
+ *     tags: [Project]
+ *     summary: Get PDF report for project
+ *     security:
+ *       - BearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         required: true
+ *         name: projectId
+ *         schema:
+ *           type: number
+ *     responses:
+ *       200:
+ *         description: Report generated successfully
+ *       500:
+ *         description: Unexpected error
+ */
+router.post("/export/:projectId", authMiddleware, exportPdf);
 
 export default router;
