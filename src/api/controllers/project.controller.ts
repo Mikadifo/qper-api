@@ -65,10 +65,10 @@ export const exportPdf = async (
     res.setHeader("Content-Type", "application/pdf");
     res.setHeader(
       "Content-Disposition",
-      `attachment; filename="report-${projectId}.pdf"`,
+      `attachment; filename=report-${projectId}.pdf`,
     );
 
-    res.send(pdfBuffer);
+    res.end(pdfBuffer);
   } catch (err) {
     console.log(err);
     next(err);
