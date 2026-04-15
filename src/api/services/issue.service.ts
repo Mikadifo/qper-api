@@ -16,6 +16,7 @@ const getIssues = async (projectId: number) => {
   try {
     const issues = await prisma.bugReport.findMany({
       where: { projectId },
+      orderBy: { createdAt: "desc" },
       select: {
         id: true,
         title: true,
